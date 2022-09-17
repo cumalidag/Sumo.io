@@ -4,8 +4,7 @@ using UnityEngine;
 
 // This particular class controls the player's movement
 public class PlayerController : MonoBehaviour
-{
-
+{ 
     // This is a variable that will be used to move the player
     [SerializeField] private float movementSpeed;
     // This is a variable that will be used to rotate the player
@@ -51,7 +50,7 @@ public class PlayerController : MonoBehaviour
     private void TouchController()
     {
         // Player movement z direction (forward)
-        transform.Translate(Vector3.forward * Time.deltaTime * movementSpeed);
+        GameManager.instance.player.transform.Translate(Vector3.forward * Time.deltaTime * movementSpeed);
         // If the screen is touched
         if (Input.touchCount > 0)
         {
@@ -84,9 +83,9 @@ public class PlayerController : MonoBehaviour
 
             }
             // Player rotates according to the touch input
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, CalculateRotation(), rotationSpeed * Time.deltaTime);
+            GameManager.instance.player.transform.rotation = Quaternion.RotateTowards(GameManager.instance.player.transform.rotation, CalculateRotation(), rotationSpeed * Time.deltaTime);
 
         }
     }
-
+    
 }
