@@ -14,6 +14,7 @@ public class FoodCollisionDetection : MonoBehaviour
             Destroy(gameObject);
             // Increase the score
             other.GetComponent<Player>().score++;
+            other.GetComponent<Player>().transform.localScale += new Vector3(0.1f, 0.1f, 0.1f);
 
         }
     }
