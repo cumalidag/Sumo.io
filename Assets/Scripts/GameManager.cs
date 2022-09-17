@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        
         if (instance == null)
         {
             instance = this;
@@ -19,6 +20,10 @@ public class GameManager : MonoBehaviour
         {
             Destroy(instance);
         }
+    }
+    private void Start()
+    {
+        player = GameObject.FindObjectOfType<Player>().gameObject;
     }
 
 }
