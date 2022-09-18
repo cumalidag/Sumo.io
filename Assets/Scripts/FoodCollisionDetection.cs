@@ -16,6 +16,7 @@ public class FoodCollisionDetection : MonoBehaviour
             other.GetComponent<Player>().score++;
             other.GetComponent<Player>().transform.localScale += new Vector3(0.1f, 0.1f, 0.1f);
             other.GetComponent<Player>().transform.position += new Vector3(0, 0.1f, 0);
+            GameManager.instance.tempPlayer.GetComponent<Player>().impulse += 100;
 
         }
     }

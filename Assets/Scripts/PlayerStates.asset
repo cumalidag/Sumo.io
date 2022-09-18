@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 767a09ee9063a5b4a933918790b371ca, type: 3}
   m_Name: PlayerStates
   m_EditorClassIdentifier: 
-  prefabName: Cumali
   score: 0
+  impulse: 400

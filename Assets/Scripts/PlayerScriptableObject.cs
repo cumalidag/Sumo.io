@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerScriptableObject : ScriptableObject
 {
-    public int score=0;
+    public int score = 0;
+    public int impulse = 0;
 
 }
