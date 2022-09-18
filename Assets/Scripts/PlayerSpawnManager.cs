@@ -7,7 +7,7 @@ public class PlayerSpawnManager : MonoBehaviour
     public float spawnRange = 9;
     void Start()
     {
-        Instantiate(GameManager.instance.player, GenerateSpawnPosition(), Quaternion.identity);
+        GameManager.instance.tempPlayer = Instantiate(GameManager.instance.player, GenerateSpawnPosition(), Quaternion.identity);
     }
 
     private Vector3 GenerateSpawnPosition()

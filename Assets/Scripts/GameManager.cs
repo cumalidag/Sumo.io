@@ -6,12 +6,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public GameObject player;
+    public GameObject tempPlayer;
     public GameObject enemy;
     public GameObject food;
 
     private void Awake()
     {
-        
         if (instance == null)
         {
             instance = this;
@@ -20,10 +20,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(instance);
         }
-    }
-    private void Start()
-    {
-        player = GameObject.FindObjectOfType<Player>().gameObject;
     }
 
 }

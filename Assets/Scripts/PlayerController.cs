@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
     private void TouchController()
     {
         // Player movement z direction (forward)
-        GameManager.instance.player.transform.Translate(Vector3.forward * Time.deltaTime * movementSpeed);   
+        GameManager.instance.tempPlayer.transform.Translate(Vector3.forward * Time.deltaTime * movementSpeed);   
         // If the screen is touched
         if (Input.touchCount > 0)
         {
@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
 
             }
             // Player rotates according to the touch input
-            GameManager.instance.player.transform.rotation = Quaternion.RotateTowards(GameManager.instance.player.transform.rotation, CalculateRotation(), rotationSpeed * Time.deltaTime);
+            GameManager.instance.tempPlayer.transform.rotation = Quaternion.RotateTowards(GameManager.instance.tempPlayer.transform.rotation, CalculateRotation(), rotationSpeed * Time.deltaTime);
 
         }
     }
