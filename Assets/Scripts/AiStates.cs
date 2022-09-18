@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static AiStates;
 
 public class AiStates
 {
     public enum STATE
     {
-        IDLE,
-        PATROL,
-        PURSUE,
-        ATTACK
+        PATROLFORFOOD,
+        PURSUEFORFOOD,
+        PATROLFORPLAYER,
+        PURSUEFORPLAYER
     };
 
     public enum EVENT
@@ -23,7 +24,7 @@ public class AiStates
     public STATE name;
     protected EVENT stage;
     protected GameObject npc;
-    protected List<Transform> food;
+    protected List<GameObject> food;
     protected AiStates nextState;
     protected NavMeshAgent agent;
     protected GameObject player;
@@ -33,7 +34,7 @@ public class AiStates
     [SerializeField] private float _eatDist = 7.0f;
     [SerializeField] private float _attackDist = 7.0f;
 
-    public AiStates(GameObject _npc, NavMeshAgent _agent, List<Transform> _food, GameObject _player)
+    public AiStates(GameObject _npc, NavMeshAgent _agent, List<GameObject> _food, GameObject _player)
     {
         npc = _npc;
         agent = _agent;
@@ -45,7 +46,7 @@ public class AiStates
     public virtual void Enter() { stage = EVENT.UPDATE; }
     public virtual void Update() { stage = EVENT.UPDATE; }
     public virtual void Exit() { stage = EVENT.EXIT; }
-    
+
     public AiStates Process()
     {
         if (stage == EVENT.ENTER) Enter();
@@ -61,9 +62,9 @@ public class AiStates
     public bool CanSeeFood()
     {
         {
-            foreach (Transform f in food)
+            foreach (GameObject f in food)
             {
-                Vector3 dir = f.position - npc.transform.position;
+                Vector3 dir = f.transform.position - npc.transform.position;
                 float angle = Vector3.Angle(npc.transform.forward, dir);
                 if (dir.magnitude < _visDist && angle < _visAngle)
                 {
@@ -84,9 +85,9 @@ public class AiStates
 
     public bool CanEatFood()
     {
-        foreach (Transform f in food)
+        foreach (GameObject f in food)
         {
-            Vector3 dir = f.position - npc.transform.position;
+            Vector3 dir = f.transform.position - npc.transform.position;
             if (dir.magnitude < _eatDist)
             {
                 return true;
@@ -123,62 +124,176 @@ public class AiStates
         return false;
     }
 
-    public class Idle : AiStates
-    {
-        public Idle(GameObject _npc, NavMeshAgent _agent, List<Transform> _food, GameObject _player)
-            : base(_npc, _agent, _food, _player)
-        {
-            name = STATE.IDLE;
-        }
 
-        public override void Enter()
-        {
-            base.Enter();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-            if (CanSeeFood())
-            {
-               // nextState = new Pursue(npc, agent, food, player);
-                stage = EVENT.EXIT;
-            }    
-            else if (Random.Range(0,100) < 10)
-            {
-                nextState = new Patrol(npc, agent, food, player);
-                stage = EVENT.EXIT;
-            }
-        }
-
-        public override void Exit()
-        {
-            base.Exit();
-        }
-    }
-    
-    public class Patrol : AiStates
-    {
-        int currentIndex = -1;
-
-        public Patrol(GameObject _npc, NavMeshAgent _agent, List<Transform> _food, GameObject _player)
-            : base(_npc, _agent, _food, _player)
-        {
-            name = STATE.PATROL;
-            agent.speed = 1.5f;
-            agent.isStopped = false;
-        }
-
-        public override void Enter()
-        {
-            float lastDistance = Mathf.Infinity;
-
-            foreach (Transform f in food)
-            {
-               // GameObject thisFood = 
-            }
-        }
-    }
 
 
 }
+
+public class PatrolForFood : AiStates
+{
+    public PatrolForFood(GameObject _npc, NavMeshAgent _agent, List<GameObject> _food, GameObject _player)
+        : base(_npc, _agent, _food, _player)
+    {
+        name = STATE.PATROLFORFOOD;
+    }
+
+    public override void Enter()
+    {
+        base.Enter();
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        if (CanSeeFood())
+        {
+            nextState = new PursueForFood(npc, agent, food, player);
+            stage = EVENT.EXIT;
+        }
+        else if (Random.Range(0, 100) < 10)
+        {
+            nextState = new PatrolForFood(npc, agent, food, player);
+            stage = EVENT.EXIT;
+        }
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+    }
+}
+
+public class PursueForFood : AiStates
+{
+    int currentIndex = -1;
+
+    public PursueForFood(GameObject _npc, NavMeshAgent _agent, List<GameObject> _food, GameObject _player)
+        : base(_npc, _agent, _food, _player)
+    {
+        name = STATE.PURSUEFORFOOD;
+        agent.speed = 1.5f;
+        agent.isStopped = false;
+    }
+
+    public override void Enter()
+    {
+        float lastDistance = Mathf.Infinity;
+
+        for (int i = 0; i < GameManager.instance.food.Count; i++)
+        {
+            GameObject thisFood = GameManager.instance.food[i];
+            float distance = Vector3.Distance(npc.transform.position, thisFood.transform.position);
+            if (distance < lastDistance)
+            {
+                currentIndex = i;
+                lastDistance = distance;
+            }
+
+        }
+
+        base.Enter();
+    }
+
+    public override void Update()
+    {
+
+        if (CanSeeFood())
+        {
+            nextState = new PursueForFood(npc, agent, food, player);
+            stage = EVENT.EXIT;
+        }
+        else if (agent.remainingDistance < 1.0f)
+        {
+            currentIndex = (currentIndex + 1) % GameManager.instance.food.Count;
+            agent.SetDestination(GameManager.instance.food[currentIndex].transform.position);
+        }
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+    }
+}
+
+public class PatrolForPlayer : AiStates
+{
+    public PatrolForPlayer(GameObject _npc, NavMeshAgent _agent, List<GameObject> _food, GameObject _player)
+        : base(_npc, _agent, _food, _player)
+    {
+        name = STATE.PATROLFORPLAYER;
+        agent.speed = 4.0f;
+        agent.isStopped = false;
+    }
+
+    public override void Enter()
+    {
+        base.Enter();
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        if (CanSeePlayer())
+        {
+            nextState = new PursueForPlayer(npc, agent, food, player);
+            stage = EVENT.EXIT;
+        }
+        else if (Random.Range(0, 100) < 10)
+        {
+            nextState = new PatrolForPlayer(npc, agent, food, player);
+            stage = EVENT.EXIT;
+        }
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+    }
+}
+
+public class PursueForPlayer : AiStates
+{
+
+    public PursueForPlayer(GameObject _npc, NavMeshAgent _agent, List<GameObject> _food, GameObject _player)
+        : base(_npc, _agent, _food, _player)
+    {
+        name = STATE.PURSUEFORPLAYER;
+        agent.speed = 1.5f;
+        agent.isStopped = false;
+    }
+
+    public override void Enter()
+    {
+        float lastDistance = Mathf.Infinity;
+        float distance = Vector3.Distance(npc.transform.position, GameManager.instance.tempPlayer.transform.position);
+        if (distance < lastDistance)
+        {
+            lastDistance = distance;
+        }
+
+
+
+        base.Enter();
+    }
+
+    public override void Update()
+    {
+
+        if (CanSeeFood())
+        {
+            nextState = new PursueForPlayer(npc, agent, food, player);
+            stage = EVENT.EXIT;
+        }
+        else if (agent.remainingDistance < 1.0f)
+        {
+            agent.SetDestination(GameManager.instance.tempPlayer.transform.position);
+        }
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+    }
+}
+
+
