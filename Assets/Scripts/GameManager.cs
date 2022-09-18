@@ -8,7 +8,8 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject tempPlayer;
     public GameObject enemy;
-    public GameObject food;
+    public GameObject foodPrefabs;
+    public List<GameObject> food;
 
     private void Awake()
     {
