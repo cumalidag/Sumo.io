@@ -10,6 +10,7 @@ public class DeathScript : MonoBehaviour
         if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
         {
             Debug.Log("You won");
+            Time.timeScale = 0;
         }
     }
     private void OnTriggerEnter(Collider other)
