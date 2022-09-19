@@ -6,7 +6,7 @@ public class CameraController : MonoBehaviour
 {
 
     // Camera will be chase this object from _offSet position
-    [SerializeField] private Vector3 _offSet = new Vector3(0, 10, -5);
+    [SerializeField] private Vector3 _offSet = new Vector3(0, 10, -10);
     // Camera chase speed
     [SerializeField] private float _chaseSpeed = 5;
     private void LateUpdate()
