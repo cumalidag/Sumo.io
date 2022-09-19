@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4732968090650155106}
   - component: {fileID: 4732968090650155107}
   - component: {fileID: 8247829779084392039}
-  - component: {fileID: 985035110}
+  - component: {fileID: -5538772221226126441}
   m_Layer: 0
   m_Name: Food
   m_TagString: Food
@@ -115,7 +115,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &985035110
+--- !u!114 &-5538772221226126441
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

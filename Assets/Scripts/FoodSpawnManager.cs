@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class FoodSpawnManager : MonoBehaviour
 {
-    [SerializeField] private float _spawnTime = 1f;
-    [SerializeField] private float _spawnDelay = 1f;
     [SerializeField] FoodCollisionDetection foodCollisionDetectionScript;
     
     private void Start()

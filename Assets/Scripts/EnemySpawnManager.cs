@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class EnemySpawnManager : MonoBehaviour
 {
+    // Enemy spawn range
     public float spawnRange = 9;
+    // Enemy spawn count
     public int enemyCount = 7;
 
-    // Start is called before the first frame update
+    
     void Start()
     {
+        // Spawn enemies
         SpawnEnemyWave(enemyCount);
     }
-
+    // This method will be used to spawn enemies
     private void SpawnEnemyWave(int enemiesToSpawn)
     {
         for (int i = 0; i < enemiesToSpawn; i++)
@@ -20,7 +23,7 @@ public class EnemySpawnManager : MonoBehaviour
             Instantiate(GameManager.instance.enemy, GenerateSpawnPosition(), Quaternion.identity);
         }
     }
-
+    // This method will be used to generate a random spawn position
     private Vector3 GenerateSpawnPosition()
     {
         float spawnPosX = Random.Range(-spawnRange, spawnRange);

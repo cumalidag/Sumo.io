@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: PlayerStates
   m_EditorClassIdentifier: 
   score: 0
-  impulse: 100
+  impulse: 10
